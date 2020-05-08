@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/data/jpa 
+    http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
+    default-lazy-init="true">
+     
+     <context:annotation-config />
+     <context:component-scan base-package="project_spring_data.project_spring_data.model"/>
+     
+     <!-- Connection with database -->
+     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+     	<property name="driverClassName"  value="com.mysql.cj.jdbc.Driver"/>
+     	<property name="url" value="jdbc:mysql://localhost:3306/springdata?serverTimezone=UTC"/>
+     	<property name="username" value="root"/>
+     	<property name="password" value="admin" />
+     </bean>
+     	
+     <!-- Define configurations of JPA -->	
+     <bean id="entityManagerFactory" 
+		     class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		     scope="singleton">
+     	<property name="dataSource" ref="dataSource" />	
+     	<property name="jpaVendorAdapter" >
+     		<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+     			<property name="database" value="MYSQL"/>
+     			<property name="generateDdl" value="true"/> <!-- Generate tables in database -->
+			</bean>
+     	</property>
+     	<property name="persistenceUnitName" value="project-spring-data"/>
+     </bean>
+     
+     <!-- Activate transactional control -->
+     <bean id="transactionManager" 
+     class="org.springframework.orm.jpa.JpaTransactionManager"
+     scope="singleton">
+     	<property name="entityManagerFactory" ref="entityManagerFactory"/>
+     </bean>
+     
+     <jpa:repositories base-package="project_spring_data.project_spring_data.dao"/>
+</beans> 
